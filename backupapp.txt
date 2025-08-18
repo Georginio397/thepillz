@@ -1,0 +1,290 @@
+import { useState, useEffect } from "react";
+import "./App.css";
+import traitsData from "./traits.json";
+
+function App() {
+  const [showMainContent, setShowMainContent] = useState(false);
+  const [selectedNFT, setSelectedNFT] = useState("");
+  const [frameIndex, setFrameIndex] = useState(0);
+  const [currentTraits, setCurrentTraits] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [hideNavbar, setHideNavbar] = useState(false);
+  const [holdInterval, setHoldInterval] = useState(null);
+  const [isFlying, setIsFlying] = useState(false);
+  const [robotYOffset, setRobotYOffset] = useState(0);
+
+  const handleRobotClick = () => {
+    setIsFlying(true);
+    const duration = 250;
+    const start = window.scrollY;
+    const startTime = performance.now();
+    const robotTravel = window.innerHeight + 400;
+
+    const animateScroll = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      window.scrollTo({ top: start * (1 - progress), behavior: "auto" });
+      setRobotYOffset(progress * robotTravel);
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      } else {
+        setIsFlying(false);
+        setRobotYOffset(0);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
+  const startHolding = (direction) => {
+    if (holdInterval) return;
+    const interval = setInterval(() => {
+      setFrameIndex((prev) => {
+        if (direction === "left") return Math.max(0, prev - 1);
+        if (direction === "right") return Math.min(15, prev + 1);
+        return prev;
+      });
+    }, 100);
+    setHoldInterval(interval);
+  };
+
+  const stopHolding = () => {
+    clearInterval(holdInterval);
+    setHoldInterval(null);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowMainContent(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const foundNFT = traitsData.find(
+      (item) => item.edition === parseInt(selectedNFT)
+    );
+    if (foundNFT) {
+      const traitsObject = {};
+      foundNFT.attributes.forEach((attr) => {
+        traitsObject[attr.trait_type] = attr.value;
+      });
+      setCurrentTraits(traitsObject);
+    } else {
+      setCurrentTraits(null);
+    }
+  }, [selectedNFT]);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let timeout;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setShowScrollTop(currentScrollY > 300);
+      clearTimeout(timeout);
+      if (currentScrollY > 100 && currentScrollY > lastScrollY) {
+        setHideNavbar(true);
+      } else {
+        timeout = setTimeout(() => setHideNavbar(false), 100);
+      }
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleNFTInputChange = (e) => {
+    const val = e.target.value;
+    if (/^\d{0,4}$/.test(val)) {
+      if (val === "") {
+        setSelectedNFT("");
+      } else {
+        const num = parseInt(val);
+        if (!isNaN(num) && num >= 1 && num <= 2222) {
+          setSelectedNFT(num);
+          setFrameIndex(0);
+        }
+      }
+    }
+  };
+
+  const downloadFrame = () => {
+    const sprite = new Image();
+    sprite.crossOrigin = "Anonymous";
+    sprite.src = `/sprites/${selectedNFT}.png`;
+    sprite.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 1000;
+      canvas.height = 1000;
+      ctx.drawImage(sprite, frameIndex * 1000, 0, 1000, 1000, 0, 0, 1000, 1000);
+      const link = document.createElement("a");
+      link.download = `nft_${selectedNFT}_frame${frameIndex + 1}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+  };
+
+  return (
+    <div className="App">
+      <div className="background-image"></div>
+
+      {!showMainContent && (
+        <img src="/intro.gif" alt="intro" className="intro-gif-overlay" />
+      )}
+
+      <nav className={`navbar ${hideNavbar ? "hidden" : ""}`}>
+        <div className="navbar-rounded">
+          <div className="navbar-links">
+            <a href="#home" className="pillz">Home</a>
+            <a href="#pillz" className="pillz">Pillz</a>
+            <a href="https://magiceden.io" className="magiceden-link" target="_blank" rel="noreferrer">MagicEden</a>
+          </div>
+          <div className="navbar-icons">
+            <a href="https://twitter.com/ThePillzXYZ" target="_blank" rel="noreferrer">
+              <img src="/icons/x.png" alt="" />
+            </a>
+            <a href="https://pump.fun" target="_blank" rel="noreferrer">
+              <img src="/icons/ME.png" alt="" />
+            </a>
+            <a href="https://t.me/ThePillz" target="_blank" rel="noreferrer">
+              <img src="/icons/launchnft.png" alt="" />
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <section className="home-section" id="home">
+        <div className="home-bg"></div>
+        <div className="home-content"></div>
+      </section>
+
+      <div className="section-divider"></div>
+
+      <p className="pillz-description">
+      The Pillz is a bunch of janky  characters loosely inspired by our beloved Pump.fun playground.
+Each one looks like it crawled out of a broken vending machine after a long night of chart watching and poor decisions.
+And yet, despite their flaws, they’ve come together to form one of the most chaotic, tight-knit communities on-chain. It’s where memes matter more than meaning, and every degenerate has a place to belong.
+ 
+  <strong>Welcome in.</strong>
+</p>
+
+      <div className="main-content" id="pillz">
+
+   
+
+      <div className={`pillz-container ${!selectedNFT ? 'center-only-right' : ''}`}>
+
+          <div className="pillz-left">
+            <h2>Where’s your Pill?</h2>
+            <div className="nft-search">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Search your pill..."
+                value={selectedNFT}
+                onChange={handleNFTInputChange}
+              />
+            </div>
+            <button className="download-btn" onClick={downloadFrame}>Download your PFP</button>
+
+            <div className="frame-wrapper">
+              {!selectedNFT || !currentTraits ? (
+                <div className="placeholder-gif">
+                  <img src="/bg.gif" alt="Idle animation" />
+                </div>
+              ) : (
+                <div
+                  className="sprite-frame"
+                  style={{
+                    backgroundImage: `url(/sprites/${selectedNFT}.png)`,
+                    backgroundPositionX: `-${frameIndex * 300}px`,
+                  }}
+                ></div>
+              )}
+
+              <div className="frame-controls">
+                <button
+                  onMouseDown={() => startHolding("left")}
+                  onMouseUp={stopHolding}
+                  onMouseLeave={stopHolding}
+                  onClick={() => setFrameIndex((i) => Math.max(0, i - 1))}
+                >
+                  ⬅
+                </button>
+                <span>Frame {frameIndex + 1} / 16</span>
+                <button
+                  onMouseDown={() => startHolding("right")}
+                  onMouseUp={stopHolding}
+                  onMouseLeave={stopHolding}
+                  onClick={() => setFrameIndex((i) => Math.min(15, i + 1))}
+                >
+                  ➡
+                </button>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div className="pillz-right">
+          <h3>Traits</h3>
+
+          <div className="traits-scroll">
+            {currentTraits ? (
+              <div className="trait-grid">
+                {Object.entries(currentTraits).map(([trait, value]) => (
+                  <div className="trait-box" key={trait}>
+                    <div className="trait-type">{trait}</div>
+                    <div className="trait-value">{value}</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-traits">No pill, no traits.</p>
+            )}
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={`robot-scroll ${showScrollTop ? "visible" : ""} ${isFlying ? "flying" : ""}`}
+        onClick={handleRobotClick}
+        style={{ transform: isFlying ? `translateY(-${robotYOffset}px)` : undefined }}
+      >
+        <img src="/animations/up.gif" alt="Scroll to top" />
+      </div>
+
+      <div className="section-divider"></div>
+
+      <div className="community-section">
+        <div className="community-text">
+          <h2>Join our community</h2>
+          <p>
+          Be part of a unique digital movement. Stay updated, pick your favorite pill, and connect with fellow degens.
+          </p>
+        </div>
+        <div className="community-button">
+          <a href="https://t.me/ThePillz" target="_blank" rel="noreferrer">
+            <button className="join-btn">Join Community</button>
+          </a>
+        </div>
+      </div>
+
+
+      <footer className="site-footer">
+  <p>
+    Created by <a href="https://twitter.com/soljike" target="_blank" className="creator-name" rel="noreferrer">@soljike</a> • All rights reserved © 2025
+  </p>
+</footer>
+
+    </div>
+
+    
+  );
+  
+  
+}
+
+export default App;
+
