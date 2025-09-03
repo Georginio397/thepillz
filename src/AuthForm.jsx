@@ -14,7 +14,7 @@ function AuthForm({ onLogin }) {
 
     const endpoint = isLogin ? "/login" : "/signup";
     try {
-      const res = await fetch(`http://192.168.1.5:4000${endpoint}`, {
+      const res = await fetch(`/api${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

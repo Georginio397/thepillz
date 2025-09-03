@@ -22,7 +22,7 @@ function GlobalTimer() {
 
   
       if (remaining === 0) {
-        fetch("http://192.168.1.5:4000/winners/close-round", {
+        fetch("/api/winners/close-round", {
           method: "POST",
         })
           .then((res) => res.json())

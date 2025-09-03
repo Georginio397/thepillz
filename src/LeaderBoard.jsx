@@ -19,12 +19,12 @@ function Leaderboard({ user }) {
         let data;
 
         if (usernameNorm && usernameNorm !== "Trial") {
-          const res = await fetch(`http://192.168.1.5:4000/leaderboard/${encodeURIComponent(usernameNorm)}`);
+          const res = await fetch(`/api/leaderboard?username=${encodeURIComponent(usernameNorm)}`);
           data = await res.json();
           setUserRank(data.user || null);
         } else {
           // doar top-ul (fără rank personal)
-          const res = await fetch(`http://192.168.1.5:4000/leaderboard/guest`);
+          const res = await fetch(`/api/leaderboard?guest=true`);
           data = await res.json();
           setUserRank(null);
         }
@@ -32,7 +32,7 @@ function Leaderboard({ user }) {
         setHighscores(data.highscores || []);
         setCoins(data.coins || []);
 
-        const winnersRes = await fetch("http://192.168.1.5:4000/winners");
+        const winnersRes = await fetch("/api/winners");
         const winnersData = await winnersRes.json();
         setWinners(winnersData || []);
       } catch (err) {
