@@ -8,13 +8,14 @@ function AuthForm({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
   const [showFAQ, setShowFAQ] = useState(false);
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const endpoint = isLogin ? "/login" : "/signup";
     try {
-      const res = await fetch(`http://192.168.1.5:4000${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

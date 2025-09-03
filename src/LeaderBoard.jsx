@@ -6,6 +6,7 @@ function Leaderboard({ user }) {
   const [coins, setCoins] = useState([]);
   const [winners, setWinners] = useState([]);
   const [userRank, setUserRank] = useState(null);
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   // normalizează username-ul (string indiferent ce primești)
   const usernameNorm =
@@ -19,12 +20,12 @@ function Leaderboard({ user }) {
         let data;
 
         if (usernameNorm && usernameNorm !== "Trial") {
-          const res = await fetch(`http://192.168.1.5:4000/leaderboard/${encodeURIComponent(usernameNorm)}`);
+          const res = await fetch(`${API_URL}/leaderboard/${encodeURIComponent(usernameNorm)}`);
           data = await res.json();
           setUserRank(data.user || null);
         } else {
           // doar top-ul (fără rank personal)
-          const res = await fetch(`/api/leaderboard?guest=true`);
+          const res = await fetch(`${API_URL}/leaderboard?guest=true`);
           data = await res.json();
           setUserRank(null);
         }
@@ -32,7 +33,7 @@ function Leaderboard({ user }) {
         setHighscores(data.highscores || []);
         setCoins(data.coins || []);
 
-        const winnersRes = await fetch("/api/winners");
+        const winnersRes = await fetch(`${API_URL}/winners`);
         const winnersData = await winnersRes.json();
         setWinners(winnersData || []);
       } catch (err) {

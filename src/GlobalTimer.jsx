@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 function GlobalTimer() {
   const ROUND_DURATION = 24*60*60; // (24*60*60)
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const [timeLeft, setTimeLeft] = useState(ROUND_DURATION);
 
@@ -22,7 +23,7 @@ function GlobalTimer() {
 
   
       if (remaining === 0) {
-        fetch("http://192.168.1.5:4000/winners/close-round", {
+        fetch(`${API_URL}/winners/close-round`, {
           method: "POST",
         })
           .then((res) => res.json())

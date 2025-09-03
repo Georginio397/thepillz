@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 function FlappyPillGame({ onRequireLogin }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(null);
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -114,7 +115,7 @@ function FlappyPillGame({ onRequireLogin }) {
     const username = localStorage.getItem("username");
 
     if (username && username !== "Trial") {
-      fetch("http://192.168.1.5:4000/score", {
+      fetch(`${API_URL}/score`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
