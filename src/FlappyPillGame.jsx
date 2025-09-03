@@ -114,7 +114,7 @@ function FlappyPillGame({ onRequireLogin }) {
     const username = localStorage.getItem("username");
 
     if (username && username !== "Trial") {
-      fetch("/api/score", {
+      fetch("http://192.168.1.5:4000/score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

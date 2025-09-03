@@ -19,7 +19,7 @@ function Leaderboard({ user }) {
         let data;
 
         if (usernameNorm && usernameNorm !== "Trial") {
-          const res = await fetch(`/api/leaderboard?username=${encodeURIComponent(usernameNorm)}`);
+          const res = await fetch(`http://192.168.1.5:4000/leaderboard/${encodeURIComponent(usernameNorm)}`);
           data = await res.json();
           setUserRank(data.user || null);
         } else {
