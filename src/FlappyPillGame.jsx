@@ -57,7 +57,7 @@ function FlappyPillGame({ onRequireLogin }) {
     const img1 = new Image();
     const img2 = new Image();
     img1.src = "/sprites/bg1.png";
-    img2.src = "/sprites/bg2.png";
+    img2.src = "/sprites/bg2.PNG";
 
     let loaded = 0;
     img1.onload = () => {
