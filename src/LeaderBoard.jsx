@@ -24,11 +24,12 @@ function Leaderboard({ user }) {
           data = await res.json();
           setUserRank(data.user || null);
         } else {
-          // doar top-ul (fără rank personal)
-          const res = await fetch(`${API_URL}/leaderboard?guest=true`);
+          // pentru guest -> trimiți un placeholder
+          const res = await fetch(`${API_URL}/leaderboard/guest`);
           data = await res.json();
           setUserRank(null);
         }
+        
 
         setHighscores(data.highscores || []);
         setCoins(data.coins || []);
