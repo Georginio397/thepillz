@@ -660,7 +660,7 @@ function App() {
      
       {isMintLive ? (
         <a
-          href="https://magiceden.io"
+          href="https://launchmynft.io"
           target="_blank"
           rel="noopener noreferrer"
           className="mint-floating-btn"
@@ -669,7 +669,7 @@ function App() {
             pointerEvents: showMintBtn ? "auto" : "none",
           }}
         >
-          <img src="/animations/mint.gif" alt="Mint Now" />
+          <img src={`${PINATA_BASE}/mint.gif`} alt="Mint Now" />
         </a>
       ) : (
         <button
