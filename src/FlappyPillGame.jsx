@@ -109,16 +109,32 @@ const coinBuffer = useRef(null);
     coins.current = [];
     scoreRef.current = 0;
     coinsRef.current = 0;
-
+  
+    // ✅ Pipe inițial (static la început, doar pentru decor)
+    const top = 250; // poziție fixă
+    pipes.current.push({ x: W / 1.5, top, gap: GAP, passed: false });
+  
+    // ✅ Coins inițiali în acel gap
+    const coinsPerGap = 4;
+    const spacing = GAP / (coinsPerGap + 1);
+    for (let i = 1; i <= coinsPerGap; i++) {
+      coins.current.push({
+        x: W / 1.5 + PIPE_W / 2,
+        y: top + i * spacing,
+        collected: false,
+      });
+    }
+  
     spawnTimer.current = 0;
     pillFrameTimer.current = 0;
     coinFrameTimer.current = 0;
     pillFrameRef.current = 0;
     coinFrameRef.current = 0;
     lastTime.current = 0;
-
+  
     setGameOver(false);
   };
+  
 
   const start = () => {
     const username = localStorage.getItem("username");
