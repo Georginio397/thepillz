@@ -7,7 +7,7 @@ function FlappyPillGame({ onRequireLogin }) {
 
   const [running, setRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [soundOn, setSoundOn] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
 
   const bg1 = useRef(null);
   const bg2 = useRef(null);
