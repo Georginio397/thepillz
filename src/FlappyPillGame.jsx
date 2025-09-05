@@ -403,10 +403,10 @@ const coinBuffer = useRef(null);
     const loop = (now) => {
       if (!running) {
         cancelAnimationFrame(rafRef.current);
-        draw();
+        draw(); // redă fundalul, pipes, pill etc.
         return;
       }
-
+      
       if (lastTime.current === 0) lastTime.current = now;
       let dt = (now - lastTime.current) / 1000;
       lastTime.current = now;
@@ -418,8 +418,15 @@ const coinBuffer = useRef(null);
       rafRef.current = requestAnimationFrame(loop);
     };
 
-    const onClick = () => jump();
+    const onClick = () => {
+      if (!running && !gameOver) {
+        start();  // pornește jocul
+      } else {
+        jump();   // dacă e deja în joc, sare
+      }
+    };
     canvas.addEventListener("click", onClick);
+    
 
     if (running) {
       lastTime.current = 0;
@@ -492,27 +499,6 @@ const coinBuffer = useRef(null);
         </button>
       )}
 
-      {!running && !gameOver && (
-        <button
-          onClick={start}
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: "12px 24px",
-            fontSize: "18px",
-            background: "#2ce62a",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            color: "#000",
-          }}
-        >
-          Start
-        </button>
-      )}
     </div>
   );
 }
