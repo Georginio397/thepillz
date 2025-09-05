@@ -53,22 +53,28 @@ function FlappyPillGame({ onRequireLogin }) {
   const lastTime = useRef(0);
   const crashPosRef = useRef({ x: 0, y: 0 });
 
-  // ✅ loader imagini cu pre-decoding
   const loadImage = (src) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.src = src;
       img.onload = async () => {
         try {
-          if (img.decode) await img.decode();
+          if (img.decode) {
+            await img.decode().catch(() => {}); // nu blochează dacă decode eșuează
+          }
           resolve(img);
-        } catch {
-          resolve(img);
+        } catch (e) {
+          console.error("Decode error:", src, e);
+          resolve(img); // continuă oricum
         }
       };
-      img.onerror = reject;
+      img.onerror = (err) => {
+        console.error("Image failed:", src, err);
+        resolve(null); // marchează ca null, dar nu blochează
+      };
     });
   };
+  
 
   useEffect(() => {
     const preload = async () => {
@@ -81,21 +87,25 @@ function FlappyPillGame({ onRequireLogin }) {
         pipeBottom: "/sprites/bodybottom.png",
         ground: "/sprites/ground.png",
       };
-      const entries = Object.entries(sources);
   
-      const loaded = await Promise.all(
-        entries.map(async ([key, src]) => {
-          const img = await loadImage(src);
-          return [key, img];
-        })
-      );
-  
-      assets.current = Object.fromEntries(loaded);
-      setAssetsReady(true);
+      try {
+        const entries = Object.entries(sources);
+        const loaded = await Promise.all(
+          entries.map(async ([key, src]) => {
+            const img = await loadImage(src);
+            console.log("Loaded:", key, !!img);
+            return [key, img];
+          })
+        );
+        assets.current = Object.fromEntries(loaded);
+        setAssetsReady(true);
+      } catch (e) {
+        console.error("Preload error:", e);
+      }
     };
     preload();
   }, []);
-
+  
 
     // ✅ AudioContext pentru sunete
     const audioCtx = useRef(null);
