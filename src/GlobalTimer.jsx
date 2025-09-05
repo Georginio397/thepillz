@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 function GlobalTimer() {
-  const ROUND_DURATION = 24*60*60; // (24*60*60)
+  const ROUND_DURATION = 60; // (24*60*60)
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const [timeLeft, setTimeLeft] = useState(ROUND_DURATION);
