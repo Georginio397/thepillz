@@ -13,59 +13,43 @@ const PINATA_BGS = "https://thepillz.mypinata.cloud/ipfs/bafybeidu4rixu5wghxl4cc
 function ContractBar() {
   const contractAddress = "SoMeAddreSsHere123456789XYZ";
   const [copied, setCopied] = useState(false);
-  const timerRef = useRef(null);
 
   const handleCopy = () => {
-    const copy = async () => {
-      try {
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(contractAddress);
-        } else {
-          const i = document.createElement("input");
-          i.value = contractAddress;
-          document.body.appendChild(i);
-          i.select();
-          document.execCommand("copy");
-          document.body.removeChild(i);
-        }
-      } catch {}
-    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(contractAddress);
+    } else {
+      const tempInput = document.createElement("input");
+      tempInput.value = contractAddress;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+    }
 
-    copy();
-
-    // durată în funcție de viewport
-    const dur = window.innerWidth >= 1024 ? 3200 : 2000;
-    if (timerRef.current) clearTimeout(timerRef.current);
     setCopied(true);
-    timerRef.current = setTimeout(() => setCopied(false), dur);
+    setTimeout(() => setCopied(false), 2500);
   };
 
+  // verificăm dimensiunea ecranului
   const isMobile = window.innerWidth < 768;
-  const display = isMobile
-    ? `${contractAddress.slice(0, 6)}...${contractAddress.slice(-6)}`
-    : contractAddress;
 
   return (
     <div className="contract-bar">
       <span className="ca-label">CA:</span>
-
-      {/* Adresa devine “ancoră” pentru badge */}
-      <span
-        className="contract-address"
+      <span 
+        className="contract-address" 
         onClick={handleCopy}
         title="Click to copy"
       >
-        {display}
-
-        {/* Badge ancorat, apare doar când copied = true */}
-        <span className={`copy-badge ${copied ? "show" : ""}`}>
-          ✓ Copied
-        </span>
+        {isMobile 
+          ? `${contractAddress.slice(0, 6)}...${contractAddress.slice(-6)}` 
+          : contractAddress}
       </span>
+
+      {copied && <div className="copy-toast">Copied!</div>}
     </div>
   );
 }
-
 
 
 
