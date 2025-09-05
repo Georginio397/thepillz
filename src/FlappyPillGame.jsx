@@ -212,7 +212,8 @@ const coinBuffer = useRef(null);
     const draw = () => {
       ctx.fillStyle = "#0b0b0b";
       ctx.fillRect(0, 0, W, H);
-
+    
+      // === BACKGROUND ===
       if (bgReady && bg1.current && bg2.current) {
         const x = bgX.current % (W * 2);
         ctx.drawImage(bg1.current, x, 0, W, H);
@@ -220,42 +221,29 @@ const coinBuffer = useRef(null);
         ctx.drawImage(bg1.current, x + W * 2, 0, W, H);
         ctx.drawImage(bg2.current, x + W * 3, 0, W, H);
       }
-
-      pipes.current.forEach((p) => {
-        if (pipeTopReady) {
-          ctx.save();
-          ctx.translate(p.x + pipeTopImg.width / 2, p.top);
-          ctx.scale(1, -1);
-          ctx.drawImage(pipeTopImg, -pipeTopImg.width / 2, 0);
-          ctx.restore();
-        }
-        if (pipeBottomReady) {
-          ctx.drawImage(pipeBottomImg, p.x, p.top + p.gap);
-        }
-      });
-
+    
+      // === GROUND ===
       if (groundReady) {
         ctx.drawImage(groundImg, groundX, H - groundHeight);
         ctx.drawImage(groundImg, groundX + groundImg.width, H - groundHeight);
       }
-
+    
+      // === PILL ===
       if (pillReady) {
         const sx = pillFrameRef.current * frameWidth;
         const drawY = gameOver ? crashPosRef.current.y : birdY.current;
         ctx.drawImage(
           pillImg,
-          sx,
-          0,
-          frameWidth,
-          frameHeight,
+          sx, 0, frameWidth, frameHeight,
           BIRD_X - PILL_DRAW_SIZE / 2,
           drawY - PILL_DRAW_SIZE / 2,
           PILL_DRAW_SIZE,
           PILL_DRAW_SIZE
         );
       }
-
-      if (coinReady) {
+    
+      // === COINS in-game ===
+      if (coinReady && running) {
         coins.current.forEach((c) => {
           ctx.drawImage(
             coinImg,
@@ -270,8 +258,9 @@ const coinBuffer = useRef(null);
           );
         });
       }
-
-      if (!gameOver) {
+    
+      // === HUD (doar dacă e în joc) ===
+      if (!gameOver && running) {
         if (coinReady) {
           ctx.drawImage(
             coinImg,
@@ -289,35 +278,37 @@ const coinBuffer = useRef(null);
         ctx.fillStyle = "#fff";
         ctx.textAlign = "left";
         ctx.fillText(`${coinsRef.current}`, 44, 40);
-
+    
         ctx.font = "48px 'Press Start 2P', sans-serif";
         ctx.fillStyle = "#fff";
         ctx.textAlign = "center";
         ctx.fillText(`${scoreRef.current}`, W / 2, 120);
       }
-
+    
+      // === GAME OVER popup ===
       if (gameOver) {
         const popupWidth = 300;
         const popupHeight = 200;
         const popupX = W / 2 - popupWidth / 2;
         const popupY = H / 2 - popupHeight / 2;
-
+    
         ctx.fillStyle = "rgba(0,0,0,0.85)";
         ctx.fillRect(popupX, popupY, popupWidth, popupHeight);
         ctx.strokeStyle = "#2ce62a";
         ctx.lineWidth = 4;
         ctx.strokeRect(popupX, popupY, popupWidth, popupHeight);
-
+    
         ctx.fillStyle = "#fff";
         ctx.font = "28px 'Press Start 2P', sans-serif";
         ctx.textAlign = "center";
         ctx.fillText("GAME OVER", W / 2, popupY + 50);
-
+    
         ctx.font = "20px 'Press Start 2P', sans-serif";
         ctx.fillText(`Score: ${scoreRef.current}`, W / 2, popupY + 100);
         ctx.fillText(`Coins: ${coinsRef.current}`, W / 2, popupY + 140);
       }
     };
+    
 
     const update = (dt) => {
       if (bgReady) bgX.current -= BG_SPEED * dt;
