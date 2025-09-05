@@ -41,6 +41,8 @@ function FlappyPillGame({ onRequireLogin }) {
 
   // ✅ Sunet preîncărcat o singură dată
   const coinSound = useRef(null);
+  const audioCtx = useRef(null);
+const coinBuffer = useRef(null);
 
   const scoreRef = useRef(0);
   const coinsRef = useRef(0);
@@ -76,19 +78,28 @@ function FlappyPillGame({ onRequireLogin }) {
     bg2.current = img2;
   }, []);
 
-  // 🔊 Preîncărcare sunet doar o dată
-  useEffect(() => {
-    const audio = new Audio("/audio/collect.mp3");
-    audio.load();
-    coinSound.current = audio;
-  }, []);
 
-  // 🔊 Funcție pentru redare sunet optimizată
+  useEffect(() => {
+    // inițializează AudioContext o singură dată
+    audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+  
+    // încarcă fișierul de sunet
+    fetch("/audio/collect.mp3")
+      .then(res => res.arrayBuffer())
+      .then(data => audioCtx.current.decodeAudioData(data))
+      .then(decoded => {
+        coinBuffer.current = decoded;
+      })
+      .catch(err => console.error("Eroare la încărcarea sunetului:", err));
+  }, []);
+  
+  // funcția de redare optimizată
   const playCoinSound = () => {
-    if (soundOn && coinSound.current) {
-      const clone = coinSound.current.cloneNode(); // putem reda simultan mai multe
-      clone.play().catch(() => {});
-    }
+    if (!soundOn || !coinBuffer.current || !audioCtx.current) return;
+    const source = audioCtx.current.createBufferSource();
+    source.buffer = coinBuffer.current;
+    source.connect(audioCtx.current.destination);
+    source.start(0);
   };
 
   const reset = () => {
