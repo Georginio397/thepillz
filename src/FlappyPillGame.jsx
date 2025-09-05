@@ -70,7 +70,6 @@ function FlappyPillGame({ onRequireLogin }) {
     });
   };
 
-  // ✅ preload assets
   useEffect(() => {
     const preload = async () => {
       const sources = {
@@ -82,16 +81,20 @@ function FlappyPillGame({ onRequireLogin }) {
         pipeBottom: "/sprites/bodybottom.png",
         ground: "/sprites/ground.png",
       };
-      const loaded = {};
-      for (const key in sources) {
-        loaded[key] = await loadImage(sources[key]);
-      }
-      assets.current = loaded;
+      const entries = Object.entries(sources);
+  
+      const loaded = await Promise.all(
+        entries.map(async ([key, src]) => {
+          const img = await loadImage(src);
+          return [key, img];
+        })
+      );
+  
+      assets.current = Object.fromEntries(loaded);
       setAssetsReady(true);
     };
     preload();
   }, []);
-
 
 
     // ✅ AudioContext pentru sunete
