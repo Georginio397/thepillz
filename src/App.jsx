@@ -873,9 +873,9 @@ function App() {
                 `${PINATA_NFTRUNNER}/12.gif`,
                 `${PINATA_NFTRUNNER}/13.gif`,
                 `${PINATA_NFTRUNNER}/14.gif`,
-                `${PINATA_NFTRUNNER}/6.gif`,
-                `${PINATA_NFTRUNNER}/7.gif`,
-                `${PINATA_NFTRUNNER}/5.gif`,
+                `${PINATA_NFTRUNNER}/15.gif`,
+                `${PINATA_NFTRUNNER}/16.gif`,
+                `${PINATA_NFTRUNNER}/17.gif`,
               ]}
               speed={0.6}
               reverse={true}
