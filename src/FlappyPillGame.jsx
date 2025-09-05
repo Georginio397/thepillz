@@ -38,6 +38,8 @@ function FlappyPillGame({ onRequireLogin }) {
   const vel = useRef(0);
   const pipes = useRef([]);
   const coins = useRef([]);
+
+  // ✅ Sunet preîncărcat o singură dată
   const coinSound = useRef(null);
 
   const scoreRef = useRef(0);
@@ -74,10 +76,20 @@ function FlappyPillGame({ onRequireLogin }) {
     bg2.current = img2;
   }, []);
 
+  // 🔊 Preîncărcare sunet doar o dată
   useEffect(() => {
-    coinSound.current = new Audio("/audio/collect.mp3");
-    coinSound.current.load();
+    const audio = new Audio("/audio/collect.mp3");
+    audio.load();
+    coinSound.current = audio;
   }, []);
+
+  // 🔊 Funcție pentru redare sunet optimizată
+  const playCoinSound = () => {
+    if (soundOn && coinSound.current) {
+      const clone = coinSound.current.cloneNode(); // putem reda simultan mai multe
+      clone.play().catch(() => {});
+    }
+  };
 
   const reset = () => {
     birdY.current = 200;
@@ -347,10 +359,7 @@ function FlappyPillGame({ onRequireLogin }) {
           if (dist < PILL_HITBOX / 2 + COIN_R) {
             c.collected = true;
             coinsRef.current += 1;
-            if (soundOn && coinSound.current) {
-              const clone = coinSound.current.cloneNode();
-              clone.play().catch(() => {});
-            }
+            playCoinSound(); // ✅ folosim funcția optimizată
           }
         }
       });
