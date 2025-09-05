@@ -109,17 +109,14 @@ const coinBuffer = useRef(null);
     coins.current = [];
     scoreRef.current = 0;
     coinsRef.current = 0;
-  
-    // populăm scena cu un pipe inițial ca să nu fie goală
-    pipes.current.push({ x: W + 100, top: 250, gap: GAP, passed: false });
-  
+
     spawnTimer.current = 0;
     pillFrameTimer.current = 0;
     coinFrameTimer.current = 0;
     pillFrameRef.current = 0;
     coinFrameRef.current = 0;
     lastTime.current = 0;
-  
+
     setGameOver(false);
   };
 
@@ -247,14 +244,16 @@ const coinBuffer = useRef(null);
         const drawY = gameOver ? crashPosRef.current.y : birdY.current;
         ctx.drawImage(
           pillImg,
-          sx, 0, frameWidth, frameHeight,
+          sx,
+          0,
+          frameWidth,
+          frameHeight,
           BIRD_X - PILL_DRAW_SIZE / 2,
           drawY - PILL_DRAW_SIZE / 2,
           PILL_DRAW_SIZE,
           PILL_DRAW_SIZE
         );
       }
-      
 
       if (coinReady) {
         coins.current.forEach((c) => {
@@ -404,10 +403,10 @@ const coinBuffer = useRef(null);
     const loop = (now) => {
       if (!running) {
         cancelAnimationFrame(rafRef.current);
-        draw(); // redă fundalul, pipes, pill etc.
+        draw();
         return;
       }
-      
+
       if (lastTime.current === 0) lastTime.current = now;
       let dt = (now - lastTime.current) / 1000;
       lastTime.current = now;
@@ -419,15 +418,8 @@ const coinBuffer = useRef(null);
       rafRef.current = requestAnimationFrame(loop);
     };
 
-    const onClick = () => {
-      if (!running && !gameOver) {
-        start();  // pornește jocul
-      } else {
-        jump();   // dacă e deja în joc, sare
-      }
-    };
+    const onClick = () => jump();
     canvas.addEventListener("click", onClick);
-    
 
     if (running) {
       lastTime.current = 0;
@@ -500,6 +492,27 @@ const coinBuffer = useRef(null);
         </button>
       )}
 
+      {!running && !gameOver && (
+        <button
+          onClick={start}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: "12px 24px",
+            fontSize: "18px",
+            background: "#2ce62a",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            color: "#000",
+          }}
+        >
+          Start
+        </button>
+      )}
     </div>
   );
 }
