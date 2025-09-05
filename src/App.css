@@ -1601,7 +1601,7 @@ transition: filter 120ms ease-out;
   text-decoration: underline;
 }
 .nft-marquee-section {
-  max-width: 1500px;
+  max-width: 1400px;
   margin: 10px auto 40px auto;
   padding: 0 16px;
   display: flex;
@@ -1649,11 +1649,13 @@ transition: filter 120ms ease-out;
   );
 }
 .runner__track {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 16px;
+  min-width: max-content;
   will-change: transform;
 }
+
 
 .marquee__item {
   flex: 0 0 auto;

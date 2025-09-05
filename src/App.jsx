@@ -125,6 +125,15 @@ function NFTRunnerRow({ images, speed = 0.6, reverse = false }) {
     return () => cancelAnimationFrame(animRef.current);
   }, [speed, reverse]);
 
+  <div className="runner__track" ref={trackRef}>
+  {[...images, ...images].map((src, i) => (
+    <div className="marquee__item" key={i}>
+      <img src={src} alt={`NFT ${i + 1}`} />
+    </div>
+  ))}
+</div>
+
+
   return (
     <div
       className="marquee"
@@ -145,6 +154,7 @@ function NFTRunnerRow({ images, speed = 0.6, reverse = false }) {
       </div>
     </div>
   );
+  
 }
 
 function WavyDivider({
