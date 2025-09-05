@@ -280,7 +280,7 @@ const coinBuffer = useRef(null);
             coinFrameSize,
             coinFrameSize,
             10,
-            15,
+            18,
             24,
             24
           );
