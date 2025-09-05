@@ -288,6 +288,7 @@ function BeatAudioController({
   const [visible, setVisible] = useState(false);
   const containerRef = useRef(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertShown, setAlertShown] = useState(false);
   
 
   const formatTime = (time) => {
@@ -394,7 +395,7 @@ function BeatAudioController({
     const audio = audioRef.current;
     const ctx = ctxRef.current;
     if (!audio || !ctx) return;
-
+  
     try { await ctx.resume(); } catch {}
     audio.muted = false;
     fadeTo(0, 0.01);
@@ -402,12 +403,16 @@ function BeatAudioController({
       await audio.play();
       setPlaying(true);
       fadeTo(1.0, 0.18);
-
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 4000);
   
+      // 🔥 Afișează alerta doar prima dată
+      if (!alertShown) {
+        setShowAlert(true);
+        setAlertShown(true);
+        setTimeout(() => setShowAlert(false), 4000); // dispare după 4 secunde
+      }
     } catch {}
   };
+  
 
   const pause = () => {
     const audio = audioRef.current;
