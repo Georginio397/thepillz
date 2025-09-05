@@ -1649,11 +1649,14 @@ transition: filter 120ms ease-out;
   );
 }
 .runner__track {
-  display: inline-flex;
+  display: flex;              /* în loc de inline-flex */
   align-items: center;
   gap: 16px;
+  min-width: max-content;     /* previne colapsarea */
   will-change: transform;
 }
+
+
 .marquee__item {
   flex: 0 0 auto;
   width: 180px;
