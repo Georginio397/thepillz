@@ -238,6 +238,20 @@ const coinBuffer = useRef(null);
         ctx.drawImage(bg2.current, x + W * 3, 0, W, H);
       }
     
+      // === PIPES ===
+      pipes.current.forEach((p) => {
+        if (pipeTopReady) {
+          ctx.save();
+          ctx.translate(p.x + pipeTopImg.width / 2, p.top);
+          ctx.scale(1, -1);
+          ctx.drawImage(pipeTopImg, -pipeTopImg.width / 2, 0);
+          ctx.restore();
+        }
+        if (pipeBottomReady) {
+          ctx.drawImage(pipeBottomImg, p.x, p.top + p.gap);
+        }
+      });
+    
       // === GROUND ===
       if (groundReady) {
         ctx.drawImage(groundImg, groundX, H - groundHeight);
@@ -258,8 +272,8 @@ const coinBuffer = useRef(null);
         );
       }
     
-      // === COINS in-game ===
-      if (coinReady && running) {
+      // === COINS ===
+      if (coinReady) {
         coins.current.forEach((c) => {
           ctx.drawImage(
             coinImg,
@@ -275,7 +289,7 @@ const coinBuffer = useRef(null);
         });
       }
     
-      // === HUD (doar dacă e în joc) ===
+      // === HUD === (doar când rulează)
       if (!gameOver && running) {
         if (coinReady) {
           ctx.drawImage(
@@ -324,6 +338,7 @@ const coinBuffer = useRef(null);
         ctx.fillText(`Coins: ${coinsRef.current}`, W / 2, popupY + 140);
       }
     };
+    
     
 
     const update = (dt) => {
