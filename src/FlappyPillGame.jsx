@@ -109,14 +109,17 @@ const coinBuffer = useRef(null);
     coins.current = [];
     scoreRef.current = 0;
     coinsRef.current = 0;
-
+  
+    // populăm scena cu un pipe inițial ca să nu fie goală
+    pipes.current.push({ x: W + 100, top: 250, gap: GAP, passed: false });
+  
     spawnTimer.current = 0;
     pillFrameTimer.current = 0;
     coinFrameTimer.current = 0;
     pillFrameRef.current = 0;
     coinFrameRef.current = 0;
     lastTime.current = 0;
-
+  
     setGameOver(false);
   };
 
@@ -244,16 +247,14 @@ const coinBuffer = useRef(null);
         const drawY = gameOver ? crashPosRef.current.y : birdY.current;
         ctx.drawImage(
           pillImg,
-          sx,
-          0,
-          frameWidth,
-          frameHeight,
+          sx, 0, frameWidth, frameHeight,
           BIRD_X - PILL_DRAW_SIZE / 2,
           drawY - PILL_DRAW_SIZE / 2,
           PILL_DRAW_SIZE,
           PILL_DRAW_SIZE
         );
       }
+      
 
       if (coinReady) {
         coins.current.forEach((c) => {
