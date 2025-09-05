@@ -65,14 +65,17 @@ const coinBuffer = useRef(null);
     img2.src = "/sprites/bg2.PNG";
 
     let loaded = 0;
-    img1.onload = () => {
+    img1.onload = async () => {
+      try { if (img1.decode) await img1.decode(); } catch {}
       loaded++;
       if (loaded === 2) setBgReady(true);
     };
-    img2.onload = () => {
+    img2.onload = async () => {
+      try { if (img2.decode) await img2.decode(); } catch {}
       loaded++;
       if (loaded === 2) setBgReady(true);
     };
+    
 
     bg1.current = img1;
     bg2.current = img2;
