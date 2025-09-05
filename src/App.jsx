@@ -7,7 +7,7 @@ import Leaderboard from "./LeaderBoard";
 import GlobalTimer from "./GlobalTimer";
 
 const PINATA_BASE = "https://thepillz.mypinata.cloud/ipfs/bafybeiczkxorffrpdzb6smanhiysps37ax5v7avhuso63kda4d4wk5w2ce";
-const PINATA_NFTRUNNER = "https://thepillz.mypinata.cloud/ipfs/bafybeibarkgrhtenunlxtevmaf2jmhbjjxyb57flwjqqtcbdpdmtkfvp5e";
+const PINATA_NFTRUNNER = "https://thepillz.mypinata.cloud/ipfs/bafybeieqqwhpjdti2hit2nt5fxmxoj6xvkuxkktfwdudazseterwjbtczy";
 const PINATA_BGS = "https://thepillz.mypinata.cloud/ipfs/bafybeidu4rixu5wghxl4cce2y33zadf7vpl7t4rmi77de2cl45p4yefwiu";
 
 function ContractBar() {
