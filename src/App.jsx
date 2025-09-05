@@ -287,6 +287,8 @@ function BeatAudioController({
   const [duration, setDuration] = useState(0);
   const [visible, setVisible] = useState(false);
   const containerRef = useRef(null);
+  const [showAlert, setShowAlert] = useState(false);
+  
 
   const formatTime = (time) => {
     if (isNaN(time)) return "0:00";
@@ -400,6 +402,10 @@ function BeatAudioController({
       await audio.play();
       setPlaying(true);
       fadeTo(1.0, 0.18);
+
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 4000);
+  
     } catch {}
   };
 
@@ -452,6 +458,14 @@ function BeatAudioController({
     style={{ width: "24px", height: "24px" }}
   />
 </div>
+
+{showAlert && (
+  <div className="site-alert">
+    🎧 Audio playback is now enabled.  
+    On some devices, this may slightly affect performance.
+  </div>
+)}
+
 
 
       <div className={`player-body ${visible ? "open" : ""}`}>
@@ -512,6 +526,7 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [showAuth, setShowAuth] = useState(false);
+  
 
   useEffect(() => {
     const savedUser = localStorage.getItem("username");
